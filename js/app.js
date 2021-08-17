@@ -1,7 +1,13 @@
 //APRENDIENDO INDEXDB
 
+let DB;
+
 document.addEventListener('DOMContentLoaded', () =>{
     crmDB();
+
+    setTimeout(() =>{
+        crearCliente();
+    },5000);
 })
 
 function crmDB(){
@@ -16,6 +22,8 @@ function crmDB(){
     //Si se creo bien
     crmDB.onsuccess = function() {
         console.log('base de datos creada');
+
+        DB = crmDB.result;
     } 
 
     //Configurar la base de datos 
@@ -31,6 +39,29 @@ function crmDB(){
         objectStore.createIndex('telefono' , 'telefono', {unique: false}); 
     
     
-    } 
-    
+    }     
+}
+
+function crearCliente(){
+    let transaction = DB.transaction(['crm'], 'readwrite');
+
+    transaction.oncomplete = function(){
+        console.log('Transaccion hecha');
     }
+
+    transaction.onerror = function(){
+        console.log('Hubo un error');
+    }
+
+    const objectStore = transaction.objectStore('crm');
+
+    const nuevoCliente = {
+        telefono: 454545,
+        nombre : 'Gabi',
+        email: 'email@email,com'
+    }
+
+    const peticion = objectStore.add(nuevoCliente);
+
+    console.log(peticion);
+}
